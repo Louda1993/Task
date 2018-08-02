@@ -54,14 +54,14 @@ class TaskController: UIViewController, BarButtonsConfigarable {
         let taskSettingsVC = TaskSettingsController()
         let navigationController = UINavigationController(rootViewController: taskSettingsVC)
         taskSettingsVC.delegate = self
-        self.present(navigationController, animated: true, completion: nil)
+        present(navigationController, animated: true, completion: nil)
     }
     
     func firstBarButtonAction(_ sender: AnyObject) {
         let taskCreateVC = TaskCreateController()
         let navigationController = UINavigationController(rootViewController: taskCreateVC)
         taskCreateVC.delegate = self
-        self.present(navigationController, animated: true, completion: nil)
+        present(navigationController, animated: true, completion: nil)
     }
     
     func deleteObject(location: IndexPath, entity: String, oldObject: NSManagedObject, identifier: String) {
