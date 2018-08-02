@@ -8,16 +8,63 @@
 
 import UIKit
 import CoreData
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        let center  = UNUserNotificationCenter.current()
+        center.delegate = self
+        center.requestAuthorization(options: [.sound, .alert, .badge]) { (granted, error) in
+            if error == nil{
+                DispatchQueue.main.async(execute: {
+                    UIApplication.shared.registerForRemoteNotifications()
+                })
+            }
+        }
+        
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.makeKeyAndVisible()
+        
+        let viewController = TaskController()
+        let navigationController = UINavigationController(rootViewController: viewController)
+        window?.rootViewController = navigationController
+        
         return true
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        removeNotification(identifier: response.notification.request.identifier)
+        completionHandler()
+    }
+    
+    func removeNotification(identifier: String) {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let managedContext = appDelegate.persistentContainer.viewContext
+        
+        let tasksFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "TasksUnfinished")
+        do {
+            let objects = try managedContext.fetch(tasksFetch) as! [TasksUnfinished]
+            for object in objects {
+                if object.identifier == identifier {
+                    object.notification = false
+                }
+                
+                if objects.count == 1 {
+                    UserDefaults.standard.set(false, forKey: "notifications")
+                }
+            }
+            try managedContext.save()
+        } catch _ {
+             print("Unexpected error.")
+        }
+        
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: [identifier])
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
