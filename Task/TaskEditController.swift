@@ -61,7 +61,6 @@ class TaskEditController: TaskReusableControllerDetail, BarButtonsConfigarable, 
         }
         
         editTask(entity: "TasksUnfinished")
-        delegate?.fetchFinished()
         delegate?.fetchUnfinished()
         delegate?.taskTable.reloadData()
         dismiss(animated: true, completion: nil)
