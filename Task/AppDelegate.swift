@@ -59,8 +59,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 }
             }
             try managedContext.save()
-        } catch _ {
-             print("Unexpected error.")
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
         }
         
         let center = UNUserNotificationCenter.current()
