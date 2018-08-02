@@ -15,7 +15,7 @@ class TaskCreateController: TaskReusableControllerDetail, BarButtonsConfigarable
     
     override func viewDidLoad() {
         setupMain()
-        addBarButtonItems(ofPosition: [.left, .right], ofTitle: ["Hotovo", "Přidat"])
+        addBarButtonItems(ofPosition: [.left, .right], ofTitle: ["Zrušit", "Přidat"])
     }
     
     func firstBarButtonAction(_ sender: AnyObject) {
